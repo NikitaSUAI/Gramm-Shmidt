@@ -5,5 +5,5 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
-add_executable(AliceShop main.cpp)
+add_executable(AliceShop main.cpp Reader.cpp Reader.h)
 target_link_libraries (AliceShop Eigen3::Eigen)
