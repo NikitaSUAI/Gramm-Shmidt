@@ -23,7 +23,7 @@ std::vector<Eigen::MatrixXf>* Reader::readDB(){
             for(int d = 0; d < dimension; d++)
                 stream >> segment(j, d);
         }
-        result->push_back(segment);
+        (*result)[i] = segment;
     }
     return result;
 }
@@ -32,7 +32,7 @@ std::vector<Eigen::MatrixXf>* Reader::readInstances() {
     if(!stream.is_open()){
         throw 0;// delete this!!!!
     }
-    std::vector<Eigen::MatrixXf> *result = new std::vector<Eigen::MatrixXf>(segments);
+    auto *result = new std::vector<Eigen::MatrixXf>();
     std::string tmp;
     while(!stream.eof()){
         Eigen::MatrixXf segment(segment_len, dimension);
