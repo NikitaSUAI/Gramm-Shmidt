@@ -4,6 +4,7 @@
 
 #include "reader.h"
 
+#include <ios>
 #include <string>
 #include <vector>
 
@@ -12,16 +13,13 @@
 Reader::Reader(const std::string &filePath) {
 	file_descriptor_.open(filePath);
 	if(!file_descriptor_.is_open()){
-    // TODO(nikittossii): change exception value
-    throw 0;
+		std::ostringstream os;
+		os << "File \'" << filePath << "\' not exist!\n";
+		throw std::ios_base::failure(os.str());
 	}
 }
 
 std::vector<Eigen::MatrixXf>* Reader::ReadDB(){
-	if(!file_descriptor_.is_open()){
-		// TODO(nikittossii): change exception value
-    throw 0;
-	}
   file_descriptor_ >> segments_ >> segment_len_;
   std::vector<Eigen::MatrixXf> *result = new std::vector<Eigen::MatrixXf>(segments_);
   for(int i = 0; i < segments_; i++){
@@ -36,9 +34,6 @@ std::vector<Eigen::MatrixXf>* Reader::ReadDB(){
 }
 
 std::vector<Eigen::MatrixXf>* Reader::ReadInstances() {
-	if(!file_descriptor_.is_open()){
-    throw 0;// delete this!!!!
-	}
   auto *result = new std::vector<Eigen::MatrixXf>();
   std::string tmp;
   while(!file_descriptor_.eof()){
@@ -51,4 +46,10 @@ std::vector<Eigen::MatrixXf>* Reader::ReadInstances() {
   }
   file_descriptor_.close();
   return result;
+}
+
+Reader::~Reader() {
+	if(file_descriptor_.is_open()){
+		file_descriptor_.close();
+	}
 }

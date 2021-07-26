@@ -32,6 +32,7 @@ public:
 	Reader(const std::string &filePath);
 	std::vector<Eigen::MatrixXf>* ReadDB();
 	std::vector<Eigen::MatrixXf>* ReadInstances();
+	~Reader();
 };
 
 
