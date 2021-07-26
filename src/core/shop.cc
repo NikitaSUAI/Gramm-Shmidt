@@ -6,6 +6,8 @@
 
 #include <list>
 
+#include "gram_schmidt_matrix.h"
+
 Shop::Shop(std::vector<Eigen::MatrixXf> *db) {
 	LoadDB(db);
 }
@@ -36,7 +38,7 @@ Eigen::MatrixXf *
 Shop::GramSchmidtOrthogonalization(const Eigen::MatrixXf &instance) {
 	// magic 2 set from the assumption that the plane (2d)
 	// is minimum space describing the object.
-  auto *basis = new  Eigen::MatrixXf(2, instance.cols());
+  auto *basis = new GSMatrix(2, instance.cols());
   int basis_row_counter = 0;
   for(int i = 0; i < instance.rows(); i++){
     if (0 == i) {
@@ -46,9 +48,9 @@ Shop::GramSchmidtOrthogonalization(const Eigen::MatrixXf &instance) {
     const auto instance_row = instance.row(i);
     basis->row(basis_row_counter) = instance_row;
     for(int j = 0; j < basis_row_counter; j++){
-    	const auto basis_row = basis->row(j);
-    	basis->row(basis_row_counter) -= basis_row *
-    			basis_row.dot(instance_row) / basis_row.dot(basis_row);
+    	auto basis_row = basis->row(j);
+    	basis->row(basis_row_counter) -= basis_row.dot(instance_row) *
+			    basis->SelfDotVector(j);
     }
     if (!basis->row(basis_row_counter).isZero()){
     	basis_row_counter++;
