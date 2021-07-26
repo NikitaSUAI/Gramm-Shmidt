@@ -1,5 +1,9 @@
 # Alice Car Shop
 [Task](test_task_roadAR.pdf)
+## Run:
+~~~
+:~$ 
+~~~
 ## Algorithm:
 * Firstly, algorithm finds the point from witch the observations are made, and corresponding basis.
 
