@@ -15,9 +15,11 @@
 //    int car = shop.getSolution(coordinates_of_current_car);
 //
 class Shop {
+
 private:
 	std::vector<Eigen::MatrixXf> *database_=nullptr;
 	Eigen::MatrixXf *GramSchmidtOrthogonalization(const Eigen::MatrixXf &instance);
+
 public:
 	Shop(std::vector<Eigen::MatrixXf> *db);
 	void LoadDB(std::vector<Eigen::MatrixXf> *db);

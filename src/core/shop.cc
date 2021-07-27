@@ -1,7 +1,6 @@
 //
 // Created by nikittossii on 24.07.2021.
 //
-
 #include "shop.h"
 
 #include <list>
@@ -13,23 +12,29 @@ Shop::Shop(std::vector<Eigen::MatrixXf> *db) {
 }
 
 void Shop::LoadDB(std::vector<Eigen::MatrixXf> *db) {
-	if(database_ != nullptr)
+	if (database_ != nullptr)
     delete database_;
 	database_ = new std::vector<Eigen::MatrixXf>(*db);
 }
 
 int Shop::GetSolution(const Eigen::MatrixXf &instance) {
 	if(database_ != nullptr){
-    auto instance_in_normal_basis = instance
-    		* GramSchmidtOrthogonalization(instance)->transpose();
-    for(int i = 0; i < database_->size(); i++){
+		auto newInstance = RemoveBias(instance);
+		auto basis = GramSchmidtOrthogonalization(*newInstance);
+    auto instance_in_normal_basis = (*newInstance * basis->transpose()).eval();
+    delete newInstance;
+    for (int i = 0; i < database_->size(); i++) {
     	auto *item = &database_->at(i);
-    	auto item_in_normal_basis = ((*item) *
-    			GramSchmidtOrthogonalization(*item)->transpose());
-    	if((item_in_normal_basis - instance_in_normal_basis).isZero()){
+			auto item_basis = GramSchmidtOrthogonalization(*item);
+    	auto item_in_normal_basis = ((*item) *item_basis->transpose());
+    	if (item_in_normal_basis.cols() == instance_in_normal_basis.cols()
+    			&& (item_in_normal_basis - instance_in_normal_basis).isZero()) {
+    		delete item_basis;
     		return i;
     	}
+	    delete item_basis;
     }
+    delete basis;
 	}
 	return -1;
 }
@@ -46,15 +51,15 @@ Shop::GramSchmidtOrthogonalization(const Eigen::MatrixXf &instance) {
     	continue;
     }
     const auto instance_row = instance.row(i);
-    basis->row(basis_row_counter) = instance_row;
-    for(int j = 0; j < basis_row_counter; j++){
+    basis->row(basis_row_counter) = Eigen::VectorXf(instance_row);
+    for (int j = 0; j < basis_row_counter; j++) {
     	auto basis_row = basis->row(j);
     	basis->row(basis_row_counter) -= basis_row.dot(instance_row) *
 			    basis->SelfDotVector(j);
     }
-    if (!basis->row(basis_row_counter).isZero()){
+    if (!basis->row(basis_row_counter).isZero()) {
     	basis_row_counter++;
-    	if(basis_row_counter == basis->rows()){
+    	if(basis_row_counter == basis->rows()) {
     		basis->conservativeResize(basis_row_counter + 1,
 																	basis->cols());
     	}

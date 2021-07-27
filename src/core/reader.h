@@ -22,16 +22,20 @@
 //    Reader r(path_to_file);
 //    std::vector<Eigen::MatrixXf>* v1 = r.ReadDB();
 //    std::vector<Eigen::MatrixXf>* v2 = r.ReadInstances();
-class Reader {
+class Reader{
+
 private:
 	std::ifstream file_descriptor_;
   int segments_;
   int segment_len_;
   const int kDimension_ = 3;
+
 public:
 	Reader(const std::string &filePath);
+	void open(const std::string &filePath);
 	std::vector<Eigen::MatrixXf>* ReadDB();
 	std::vector<Eigen::MatrixXf>* ReadInstances();
+	void close();
 	~Reader();
 };
 

@@ -2,7 +2,9 @@
 [Task](test_task_roadAR.pdf)
 ## Run:
 ~~~
-:~$ 
+:~$ mkdir build
+:~$ cmake -S . -B build && cmake --build build
+:~$ ./build/AliceShop input_file.txt
 ~~~
 ## Algorithm:
 * Firstly, algorithm finds the point from witch the observations are made, and corresponding basis.

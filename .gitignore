@@ -3,3 +3,4 @@ cmake-build-debug
 env
 .ipynb_checkpoints
 test.ipynb
+test/gtest/*
